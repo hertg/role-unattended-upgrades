@@ -1,0 +1,22 @@
+---
+
+# resources
+# - https://wiki.debian.org/UnattendedUpgrades
+
+- name: install unattended-upgrades, apt-listchanges
+  apt:
+    name:
+      - unattended-upgrades
+      - apt-listchanges
+    state: present
+
+- name: activate unattended upgrades (step 1)
+  shell: >
+    echo unattended-upgrades unattended-upgrades/enable_auto_updates
+    boolean true | debconf-set-selections
+
+- name: activate unattended upgrades (step 2)
+  shell: dpkg-reconfigure -f noninteractive unattended-upgrades
+
+- name: manually run unattended upgrade
+  shell: unattended-upgrade
