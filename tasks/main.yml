@@ -3,20 +3,27 @@
 # resources
 # - https://wiki.debian.org/UnattendedUpgrades
 
-- name: install unattended-upgrades, apt-listchanges
-  apt:
+- name: Install unattended-upgrades, apt-listchanges
+  ansible.builtin.apt:
     name:
       - unattended-upgrades
       - apt-listchanges
     state: present
 
-- name: activate unattended upgrades (step 1)
-  shell: >
+- name: Activate unattended upgrades (step 1)
+  ansible.builtin.shell: >
+    set -o pipefail &&
     echo unattended-upgrades unattended-upgrades/enable_auto_updates
     boolean true | debconf-set-selections
+  register: debconf_selection
+  changed_when: debconf_selection.rc != 0 # todo
 
-- name: activate unattended upgrades (step 2)
-  shell: dpkg-reconfigure -f noninteractive unattended-upgrades
+- name: Activate unattended upgrades (step 2)
+  ansible.builtin.command: dpkg-reconfigure -f noninteractive unattended-upgrades
+  register: dpkg_reconfigure
+  changed_when: dpkg_reconfigure.rc != 0 # todo
 
-- name: manually run unattended upgrade
-  shell: unattended-upgrade
+- name: Manually run unattended upgrade
+  ansible.builtin.command: unattended-upgrade
+  register: unattended_upgrade
+  changed_when: unattended_upgrade.rc != 0 # todo
