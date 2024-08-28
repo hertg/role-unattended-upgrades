@@ -16,14 +16,15 @@
     echo unattended-upgrades unattended-upgrades/enable_auto_updates
     boolean true | debconf-set-selections
   register: debconf_selection
-  changed_when: debconf_selection.rc != 0 # todo
+  changed_when: debconf_selection.rc != 0   # todo
 
 - name: Activate unattended upgrades (step 2)
-  ansible.builtin.command: dpkg-reconfigure -f noninteractive unattended-upgrades
+  ansible.builtin.command: >
+    dpkg-reconfigure -f noninteractive unattended-upgrades
   register: dpkg_reconfigure
-  changed_when: dpkg_reconfigure.rc != 0 # todo
+  changed_when: dpkg_reconfigure.rc != 0    # todo
 
 - name: Manually run unattended upgrade
   ansible.builtin.command: unattended-upgrade
   register: unattended_upgrade
-  changed_when: unattended_upgrade.rc != 0 # todo
+  changed_when: unattended_upgrade.rc != 0  # todo
