@@ -15,6 +15,8 @@
     set -o pipefail &&
     echo unattended-upgrades unattended-upgrades/enable_auto_updates
     boolean true | debconf-set-selections
+  args:
+    executable: /bin/bash
   register: debconf_selection
   changed_when: debconf_selection.rc != 0   # todo
 
